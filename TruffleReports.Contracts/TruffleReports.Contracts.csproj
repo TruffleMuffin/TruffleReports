@@ -45,7 +45,11 @@
     <Compile Include="IHitService.cs" />
     <Compile Include="IoC\Injector.cs" />
     <Compile Include="IoC\IResolver.cs" />
+    <Compile Include="IReportProvider.cs" />
+    <Compile Include="IReportService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReportGenerationResult.cs" />
+    <Compile Include="ReportResult.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -25,7 +25,7 @@ namespace TruffleReports.Castle
             container.Register(
                 Component
                     .For<IHitService>()
-                    .ImplementedBy<BufferedHitService>()
+                    .ImplementedBy<HitService>()
                     .DependsOn(
                         Dependency.OnValue("connectionString", connectionString.ConnectionString),
                         Dependency.OnValue("defaultDatabase", defaultDatabase.ConnectionString)
