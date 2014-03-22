@@ -14,9 +14,12 @@ namespace TruffleReports.WebHost.Modules
     public sealed class HitModule : IHttpModule
     {
         private const string STOP_WATCH = "StopWatch";
+
         private static readonly EventHandlerTaskAsyncHelper startLogHelper = new EventHandlerTaskAsyncHelper(StartLog);
         private static readonly EventHandlerTaskAsyncHelper logHelper = new EventHandlerTaskAsyncHelper(Log);
-        private static readonly IHitService service = Injector.Get<IHitService>();
+
+        private static IHitService service;
+        private static IHitService Service { get { return service ?? (service = Injector.Get<IHitService>()); } }
 
         /// <summary>
         /// Initializes a module and prepares it to handle requests.
@@ -75,7 +78,7 @@ namespace TruffleReports.WebHost.Modules
                     SubStatusCode = app.Response.SubStatusCode
                 };
 
-            service.Log(hit);
+            Service.Log(hit);
         }
     }
 }

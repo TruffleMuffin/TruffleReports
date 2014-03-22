@@ -30,7 +30,7 @@ namespace TruffleReports.Services
             collection = db.GetCollection<Hit>(HIT_COLLECTION);
 
             this.logged = new Subject<Hit>();
-            this.logged.Buffer(buffer).Subscribe(Output);
+            this.logged.Buffer(TimeSpan.FromMinutes(1), buffer).Subscribe(Output);
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace TruffleReports.Services
         /// <param name="hits">The hits.</param>
         private void Output(IList<Hit> hits)
         {
-            collection.InsertBatch(hits);
+            if (hits.Count > 0) collection.InsertBatch(hits);
         }
     }
 }
