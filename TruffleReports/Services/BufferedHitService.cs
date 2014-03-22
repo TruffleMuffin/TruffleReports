@@ -10,7 +10,7 @@ namespace TruffleReports.Services
     /// <summary>
     /// An implementation of <see cref="IHitService"/> that buffers <see cref="Hit"/>s until an internal count is reached before batch importing.
     /// </summary>
-    internal class BufferedHitService : IHitService
+    public class BufferedHitService : IHitService
     {
         private const string HIT_COLLECTION = "truffle_reports_hits";
 

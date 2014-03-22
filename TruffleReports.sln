@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TruffleReports.WebHost", "T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TruffleReports.Contracts", "TruffleReports.Contracts\TruffleReports.Contracts.csproj", "{77AF93A2-9E58-4E60-82C0-3920100F8473}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TruffleReports.Castle", "TruffleReports.Castle\TruffleReports.Castle.csproj", "{619AD233-A58C-4226-9447-FD547D6AE1DD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{77AF93A2-9E58-4E60-82C0-3920100F8473}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77AF93A2-9E58-4E60-82C0-3920100F8473}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77AF93A2-9E58-4E60-82C0-3920100F8473}.Release|Any CPU.Build.0 = Release|Any CPU
+		{619AD233-A58C-4226-9447-FD547D6AE1DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{619AD233-A58C-4226-9447-FD547D6AE1DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{619AD233-A58C-4226-9447-FD547D6AE1DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{619AD233-A58C-4226-9447-FD547D6AE1DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
