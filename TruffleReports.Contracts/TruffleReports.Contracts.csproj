@@ -42,6 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Hit.cs" />
+    <Compile Include="IHitService.cs" />
+    <Compile Include="IoC\Injector.cs" />
+    <Compile Include="IoC\IResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
