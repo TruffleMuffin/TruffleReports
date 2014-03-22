@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TruffleReports", "TruffleReports\TruffleReports.csproj", "{CE5A1323-7ED1-42E7-956E-A94C9359671A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TruffleReports.WebHost", "TruffleReports.WebHost\TruffleReports.WebHost.csproj", "{33DE4182-0A97-42B8-9A33-A9AB619B91D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TruffleReports.Contracts", "TruffleReports.Contracts\TruffleReports.Contracts.csproj", "{77AF93A2-9E58-4E60-82C0-3920100F8473}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CE5A1323-7ED1-42E7-956E-A94C9359671A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE5A1323-7ED1-42E7-956E-A94C9359671A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE5A1323-7ED1-42E7-956E-A94C9359671A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE5A1323-7ED1-42E7-956E-A94C9359671A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33DE4182-0A97-42B8-9A33-A9AB619B91D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33DE4182-0A97-42B8-9A33-A9AB619B91D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33DE4182-0A97-42B8-9A33-A9AB619B91D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33DE4182-0A97-42B8-9A33-A9AB619B91D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77AF93A2-9E58-4E60-82C0-3920100F8473}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77AF93A2-9E58-4E60-82C0-3920100F8473}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77AF93A2-9E58-4E60-82C0-3920100F8473}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77AF93A2-9E58-4E60-82C0-3920100F8473}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
