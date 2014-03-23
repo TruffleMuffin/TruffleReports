@@ -1,5 +1,5 @@
 ﻿using MongoDB.Driver;
-using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using TruffleReports.Contracts;
 
@@ -10,7 +10,10 @@ namespace TruffleReports.Providers
     /// </summary>
     public abstract class BaseReportProvider : IReportProvider
     {
-        protected readonly MongoCollection<Hit> collection;
+        /// <summary>
+        /// The Mongo Database
+        /// </summary>
+        protected readonly MongoDatabase db;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseReportProvider" /> class.
@@ -20,18 +23,16 @@ namespace TruffleReports.Providers
         protected BaseReportProvider(string connectionString, string defaultDatabase = "local")
         {
             var client = new MongoClient(connectionString);
-            var db = client.GetServer().GetDatabase(defaultDatabase);
-            collection = db.GetCollection<Hit>(Consts.HIT_COLLECTION);
+            db = client.GetServer().GetDatabase(defaultDatabase);
         }
 
         /// <summary>
         /// Generates a report
         /// </summary>
-        /// <param name="startWindow">The start of the generation window.</param>
-        /// <param name="endWindow">The end of the generation window.</param>
+        /// <param name="hits">The hits.</param>
         /// <returns>
         /// A <see cref="TruffleReports.Contracts.ReportGenerationResult" /> regarding this instances running.
         /// </returns>
-        public abstract Task<ReportGenerationResult> Generate(DateTime startWindow, DateTime endWindow);
+        public abstract Task<ReportGenerationResult> Generate(IEnumerable<Hit> hits);
     }
 }

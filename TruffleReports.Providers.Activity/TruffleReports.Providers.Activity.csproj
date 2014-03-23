@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{619AD233-A58C-4226-9447-FD547D6AE1DD}</ProjectGuid>
+    <ProjectGuid>{3040562E-737A-428A-9DF2-33D480E07CD4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TruffleReports.Castle</RootNamespace>
-    <AssemblyName>TruffleReports.Castle</AssemblyName>
+    <RootNamespace>TruffleReports.Providers.Activity</RootNamespace>
+    <AssemblyName>TruffleReports.Providers.Activity</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -20,7 +20,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\TruffleReports.Castle.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,17 +28,15 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\TruffleReports.Castle.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core">
-      <HintPath>..\packages\Castle.Core.3.2.0\lib\net45\Castle.Core.dll</HintPath>
+    <Reference Include="MongoDB.Bson">
+      <HintPath>..\packages\mongocsharpdriver.1.8.3\lib\net35\MongoDB.Bson.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.Windsor">
-      <HintPath>..\packages\Castle.Windsor.3.2.0\lib\net45\Castle.Windsor.dll</HintPath>
+    <Reference Include="MongoDB.Driver">
+      <HintPath>..\packages\mongocsharpdriver.1.8.3\lib\net35\MongoDB.Driver.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -48,25 +45,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LoggedInProvider.cs" />
+    <Compile Include="LoggedInReport.cs" />
+    <Compile Include="LoggedInUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServiceInstaller.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TruffleReports.Contracts\TruffleReports.Contracts.csproj">
       <Project>{77af93a2-9e58-4e60-82c0-3920100f8473}</Project>
       <Name>TruffleReports.Contracts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TruffleReports.Providers.Activity\TruffleReports.Providers.Activity.csproj">
-      <Project>{3040562e-737a-428a-9df2-33d480e07cd4}</Project>
-      <Name>TruffleReports.Providers.Activity</Name>
-    </ProjectReference>
     <ProjectReference Include="..\TruffleReports\TruffleReports.csproj">
       <Project>{ce5a1323-7ed1-42e7-956e-a94c9359671a}</Project>
       <Name>TruffleReports</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

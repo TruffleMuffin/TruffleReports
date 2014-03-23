@@ -10,6 +10,11 @@ namespace TruffleReports.Contracts
     public sealed class Hit
     {
         /// <summary>
+        /// Gets or sets the id.
+        /// </summary>
+        public Guid Id { get; set; }
+
+        /// <summary>
         /// Gets or sets the <see cref="DateTime"/> the <see cref="Hit"/> was logged.
         /// </summary>
         public DateTime Logged { get; set; }

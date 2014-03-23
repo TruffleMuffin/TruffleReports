@@ -23,6 +23,6 @@ namespace TruffleReports.Entities
         /// <summary>
         /// Gets or sets the results.
         /// </summary>
-        public List<ReportGenerationResult> Results { get; set; }
+        public ReportGenerationResult[] Results { get; set; }
     }
 }

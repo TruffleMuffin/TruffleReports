@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace TruffleReports.Contracts
@@ -12,11 +13,10 @@ namespace TruffleReports.Contracts
         /// <summary>
         /// Generates a report
         /// </summary>
-        /// <param name="startWindow">The start of the generation window.</param>
-        /// <param name="endWindow">The end of the generation window.</param>
+        /// <param name="hits">The hits.</param>
         /// <returns>
         /// A <see cref="TruffleReports.Contracts.ReportGenerationResult" /> regarding this instances running.
         /// </returns>
-        Task<ReportGenerationResult> Generate(DateTime startWindow, DateTime endWindow);
+        Task<ReportGenerationResult> Generate(IEnumerable<Hit> hits);
     }
 }
