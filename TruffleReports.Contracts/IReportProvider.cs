@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace TruffleReports.Contracts
@@ -7,7 +6,7 @@ namespace TruffleReports.Contracts
     /// <summary>
     /// Describes a provider that will receive periodic calls informing it about when <see cref="Hit"/>s have been logged for it to process.
     /// </summary>
-    /// <remarks>Recommend that you use the <see cref="TruffleReports.Providers.BaseReportProvider"/> and extend it.</remarks>
+    /// <remarks>Recommend that you use the <see cref="TruffleReports.Helpers.GeneratorHelper"/> to access useful properties.</remarks>
     public interface IReportProvider
     {
         /// <summary>

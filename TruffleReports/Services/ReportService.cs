@@ -7,13 +7,14 @@ using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using TruffleReports.Contracts;
 using TruffleReports.Entities;
+using TruffleReports.Helpers;
 
 namespace TruffleReports.Services
 {
     /// <summary>
-    /// An default implementation of <see cref="IReportService"/> storing results in a Mongo collection.
+    /// An default implementation of <see cref="ReportService"/> storing results in a Mongo collection.
     /// </summary>
-    public class ReportService : IReportService
+    public class ReportService
     {
         private readonly IEnumerable<IReportProvider> providers;
         private readonly MongoCollection<ReportGenerationSummary> summaryCollection;
@@ -22,16 +23,13 @@ namespace TruffleReports.Services
         /// <summary>
         /// Initializes a new instance of the <see cref="ReportService" /> class.
         /// </summary>
-        /// <param name="connectionString">The connection string.</param>
-        /// <param name="defaultDatabase">The default database.</param>
         /// <param name="providers">The providers.</param>
-        public ReportService(IEnumerable<IReportProvider> providers, string connectionString, string defaultDatabase = "local")
+        /// <param name="helper">The helper.</param>
+        public ReportService(IEnumerable<IReportProvider> providers, RepositoryHelper helper)
         {
             this.providers = providers;
-            var client = new MongoClient(connectionString);
-            var db = client.GetServer().GetDatabase(defaultDatabase);
-            summaryCollection = db.GetCollection<ReportGenerationSummary>(Consts.SUMMARY_COLLECTION);
-            hitCollection = db.GetCollection<Hit>(Consts.HIT_COLLECTION);
+            summaryCollection = helper.Database.GetCollection<ReportGenerationSummary>(Consts.SUMMARY_COLLECTION);
+            hitCollection = helper.Database.GetCollection<Hit>(Consts.HIT_COLLECTION);
         }
 
         /// <summary>

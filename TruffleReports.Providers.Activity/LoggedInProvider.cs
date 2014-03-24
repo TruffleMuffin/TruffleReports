@@ -1,21 +1,23 @@
-﻿using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.IdGenerators;
-using MongoDB.Driver;
-using MongoDB.Driver.Builders;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.IdGenerators;
+using MongoDB.Driver;
+using MongoDB.Driver.Builders;
 using TruffleReports.Contracts;
+using TruffleReports.Helpers;
 
 namespace TruffleReports.Providers.Activity
 {
     /// <summary>
     /// Implements a <see cref="IReportProvider"/> that will generate a report about currently logged in users.
     /// </summary>
-    public class LoggedInProvider : BaseReportProvider
+    public class LoggedInProvider : IReportProvider
     {
-        private const string LOGGED_IN_REPORT_COLLECTION = "truffle_reports_logged_in";
+        private const string LOGGED_IN_REPORT_COLLECTION = "logged_in";
+
         private readonly MongoCollection<LoggedInReport> collection;
         private readonly string logOutUrl;
 
@@ -38,14 +40,12 @@ namespace TruffleReports.Providers.Activity
         /// <summary>
         /// Initializes a new instance of the <see cref="LoggedInProvider" /> class.
         /// </summary>
-        /// <param name="connectionString">The connection string.</param>
-        /// <param name="defaultDatabase">The default database.</param>
+        /// <param name="helper">The helper.</param>
         /// <param name="logOutUrl">The log out URL.</param>
-        public LoggedInProvider(string connectionString, string defaultDatabase = "local", string logOutUrl = "/Home/Logout")
-            : base(connectionString, defaultDatabase)
+        public LoggedInProvider(RepositoryHelper helper, string logOutUrl = "/Home/Logout")
         {
             this.logOutUrl = logOutUrl;
-            collection = db.GetCollection<LoggedInReport>(LOGGED_IN_REPORT_COLLECTION);
+            this.collection = helper.Database.GetCollection<LoggedInReport>(LOGGED_IN_REPORT_COLLECTION);
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace TruffleReports.Providers.Activity
         /// <returns>
         /// A <see cref="TruffleReports.Contracts.ReportGenerationResult" /> regarding this instances running.
         /// </returns>
-        public override Task<ReportGenerationResult> Generate(IEnumerable<Hit> hits)
+        public Task<ReportGenerationResult> Generate(IEnumerable<Hit> hits)
         {
             var result = new ReportGenerationResult { Provider = this.GetType().FullName };
 

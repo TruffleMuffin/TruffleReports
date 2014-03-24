@@ -46,7 +46,6 @@
     <Compile Include="IoC\Injector.cs" />
     <Compile Include="IoC\IResolver.cs" />
     <Compile Include="IReportProvider.cs" />
-    <Compile Include="IReportService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReportGenerationResult.cs" />
     <Compile Include="ReportResult.cs" />

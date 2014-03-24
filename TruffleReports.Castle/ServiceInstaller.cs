@@ -3,7 +3,7 @@ using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using TruffleReports.Contracts;
-using TruffleReports.Providers.Activity;
+using TruffleReports.Helpers;
 using TruffleReports.Services;
 
 namespace TruffleReports.Castle
@@ -25,31 +25,20 @@ namespace TruffleReports.Castle
 
             container.Register(
                 Component
-                    .For<IHitService>()
-                    .ImplementedBy<HitService>()
+                    .For<RepositoryHelper>()
                     .DependsOn(
                         Dependency.OnValue("connectionString", connectionString.ConnectionString),
                         Dependency.OnValue("defaultDatabase", defaultDatabase.ConnectionString)
                     ),
 
                 Component
-                    .For<IReportProvider>()
-                    .ImplementedBy<LoggedInProvider>()
-                    .DependsOn(
-                        Dependency.OnValue("connectionString", connectionString.ConnectionString),
-                        Dependency.OnValue("defaultDatabase", defaultDatabase.ConnectionString)
-                    )
-            );
+                    .For<IHitService>()
+                    .ImplementedBy<HitService>(),
 
-            container.Register(
                 Component
-                    .For<IReportService>()
-                    .ImplementedBy<ReportService>()
-                    .DependsOn(
-                        Dependency.OnValue("connectionString", connectionString.ConnectionString),
-                        Dependency.OnValue("defaultDatabase", defaultDatabase.ConnectionString)
-                    )
-                    .DynamicParameters((k, p) => p.Add("providers", k.ResolveAll<IReportProvider>())));
+                    .For<ReportService>()
+                    .DynamicParameters((k, p) => p.Add("providers", k.ResolveAll<IReportProvider>()))
+            );
         }
     }
 }
