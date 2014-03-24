@@ -1,14 +1,14 @@
-﻿using Castle.MicroKernel.Registration;
+﻿using System.Web.Http.Controllers;
+using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
-using TruffleReports.Contracts;
 
 namespace TruffleReports.Castle
 {
     /// <summary>
-    /// A <see cref="IWindsorInstaller"/> which will install all implementations of <see cref="IReportProvider"/> found in the bin folder.
+    /// A <see cref="IWindsorInstaller"/> which will install all implementations of <see cref="IHttpController"/> found in TruffleReports.
     /// </summary>
-    public sealed class ProviderInstaller : IWindsorInstaller
+    public sealed class ControllerInstaller : IWindsorInstaller
     {
         /// <summary>
         /// Performs the installation in the <see cref="T:Castle.Windsor.IWindsorContainer" />.
@@ -17,7 +17,7 @@ namespace TruffleReports.Castle
         /// <param name="store">The configuration store.</param>
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
-            container.Register(Classes.FromAssemblyInDirectory(new AssemblyFilter("bin")).BasedOn<IReportProvider>().WithServiceFirstInterface());
+            container.Register(Classes.FromAssemblyNamed("TruffleReports").BasedOn<IHttpController>().LifestyleTransient());
         }
     }
 }

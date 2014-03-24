@@ -16,7 +16,7 @@ namespace TruffleReports.Services
     /// </summary>
     public class ReportService
     {
-        private readonly IEnumerable<IReportProvider> providers;
+        private readonly IDictionary<string, IReportProvider> providers;
         private readonly MongoCollection<ReportGenerationSummary> summaryCollection;
         private readonly MongoCollection<Hit> hitCollection;
 
@@ -27,7 +27,13 @@ namespace TruffleReports.Services
         /// <param name="helper">The helper.</param>
         public ReportService(IEnumerable<IReportProvider> providers, RepositoryHelper helper)
         {
-            this.providers = providers;
+            if (providers.Any(a => providers.Count(b => b.Name == a.Name) > 1))
+            {
+                throw new ArgumentException("Provider names must be unique. The following is duplicated: " + providers.First(a => providers.Count(b => b.Name == a.Name) > 1).Name);
+            }
+
+            this.providers = providers.ToDictionary(a => a.Name, a => a);
+
             summaryCollection = helper.Database.GetCollection<ReportGenerationSummary>(Consts.SUMMARY_COLLECTION);
             hitCollection = helper.Database.GetCollection<Hit>(Consts.HIT_COLLECTION);
         }
@@ -45,6 +51,7 @@ namespace TruffleReports.Services
 
             var hits = hitCollection.Find(Query.And(Query<Hit>.GTE(a => a.Logged, startWindow), Query<Hit>.LTE(a => a.Logged, endWindow))).ToArray();
             var tasks = providers
+                .Values
                 .AsParallel()
                 .Select(async provider =>
                     {
@@ -76,6 +83,20 @@ namespace TruffleReports.Services
                 };
 
             summaryCollection.Insert(summary);
+        }
+
+        /// <summary>
+        /// Gets a report of the specified type
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="host">The host.</param>
+        /// <param name="queryString">The query string.</param>
+        /// <returns>
+        /// A report.
+        /// </returns>
+        public Task<object> Get(string name, string host, IEnumerable<KeyValuePair<string, string>> queryString)
+        {
+            return providers.ContainsKey(name) ? providers[name].Get(host, queryString) : null;
         }
     }
 }
