@@ -46,8 +46,9 @@ namespace TruffleReports.Services
         /// </summary>
         /// <param name="service">The service.</param>
         /// <param name="helper">The helper.</param>
-        /// <param name="buffer">The buffer.</param>
-        public HitService(ReportService service, RepositoryHelper helper, int buffer = 1000)
+        /// <param name="buffer">The buffer count.</param>
+        /// <param name="bufferTimeSpan">The buffer time span.</param>
+        public HitService(ReportService service, RepositoryHelper helper, int buffer = 1000, int bufferTimeSpan = 1)
         {
             this.collection = helper.Database.GetCollection<Hit>(Consts.HIT_COLLECTION);
             EnsureIndexes(this.collection);
@@ -57,8 +58,8 @@ namespace TruffleReports.Services
             this.logged = new Subject<Hit>();
             this.loggedAt = new Subject<DateTime>();
 
-            this.logged.Buffer(TimeSpan.FromMinutes(1), buffer).Subscribe(Output);
-            this.loggedAt.Buffer(6).Subscribe(Process);
+            this.logged.Buffer(TimeSpan.FromMinutes(bufferTimeSpan), buffer).Subscribe(Output);
+            this.loggedAt.Buffer(TimeSpan.FromMinutes(bufferTimeSpan * 3)).Subscribe(Process);
         }
 
         /// <summary>
@@ -114,7 +115,7 @@ namespace TruffleReports.Services
             hitCollection.EnsureIndex(loggedIndex);
 
             var pathIndex = new IndexKeysBuilder<Hit>();
-            loggedIndex.Ascending(a => a.Host);
+            pathIndex.Ascending(a => a.Host);
             pathIndex.Ascending(a => a.Path);
             hitCollection.EnsureIndex(pathIndex);
 

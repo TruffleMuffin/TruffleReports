@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace TruffleReports.Providers.Activity
 {
@@ -14,18 +15,13 @@ namespace TruffleReports.Providers.Activity
         public Guid Id { get; set; }
 
         /// <summary>
-        /// Gets or sets <see cref="DateTime"/> this report was generated.
+        /// Gets or sets the date the report applies to.
         /// </summary>
-        public DateTime Generated { get; set; }
+        public DateTime Date { get; set; }
 
         /// <summary>
-        /// Gets or sets the total number of logged in users.
+        /// Gets or sets the segments for this date.
         /// </summary>
-        public int Total { get; set; }
-
-        /// <summary>
-        /// Gets or sets the information tracked about the logged in users.
-        /// </summary>
-        public LoggedInUser[] Users { get; set; }
+        public List<LoggedInSegment> Segments { get; set; }
     }
 }

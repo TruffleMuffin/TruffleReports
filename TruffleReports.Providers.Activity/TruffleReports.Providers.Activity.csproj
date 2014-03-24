@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="LoggedInProvider.cs" />
     <Compile Include="LoggedInReport.cs" />
+    <Compile Include="LoggedInSegment.cs" />
     <Compile Include="LoggedInUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

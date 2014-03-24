@@ -99,10 +99,12 @@ namespace TruffleReports.Providers.Activity
             });
 
             // Find all the users in the new report that have had no activity for the defined period of time before forced logout.
-            var previousReport = collection.FindAll().SetSortOrder(SortBy<LoggedInReport>.Descending(a => a.Generated)).SetLimit(1).FirstOrDefault();
-            if (previousReport != null)
+            var currentReport = collection.FindOne(Query<LoggedInReport>.EQ(a => a.Date, DateTime.Today));
+            if (currentReport != null)
             {
-                Parallel.ForEach(previousReport.Users, u =>
+                var previousSegment = currentReport.Segments.OrderBy(a => a.Generated).LastOrDefault();
+
+                Parallel.ForEach(previousSegment.Users, u =>
                     {
                         // if they havnt logged in in a while remove them from final list
                         if (currentHitsLoggedIn.Contains(u.Identity) == false && u.LastHit.AddMinutes(10) < DateTime.Now)
@@ -131,13 +133,15 @@ namespace TruffleReports.Providers.Activity
             Parallel.ForEach(loggedInUsers, u => u.AveragePerHit = TimeSpan.FromSeconds((u.LastHit - u.FirstHit).TotalSeconds / u.TotalHits));
 
             // Generate report
-            var report = new LoggedInReport
+            var report = new LoggedInSegment
             {
                 Generated = DateTime.Now,
                 Total = loggedInUsers.Count,
                 Users = loggedInUsers.ToArray()
             };
-            collection.Insert(report);
+            currentReport = currentReport ?? new LoggedInReport { Date = DateTime.Today, Segments = new List<LoggedInSegment>() };
+            currentReport.Segments.Add(report);
+            collection.Save(currentReport);
 
             // Update report
             result.ReportResult = ReportResult.Success.ToString();
@@ -151,9 +155,11 @@ namespace TruffleReports.Providers.Activity
         /// <param name="reportCollection">The report collection.</param>
         private static void EnsureIndexes(MongoCollection<LoggedInReport> reportCollection)
         {
-            var loggedIndex = new IndexKeysBuilder<LoggedInReport>();
-            loggedIndex.Ascending(a => a.Generated);
-            reportCollection.EnsureIndex(loggedIndex);
+            var dateIndex = new IndexKeysBuilder<LoggedInReport>();
+            dateIndex.Ascending(a => a.Date);
+            reportCollection.EnsureIndex(dateIndex);
+
+            reportCollection.EnsureIndex("Segments.Generated");
         }
     }
 }
