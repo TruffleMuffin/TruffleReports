@@ -61,6 +61,22 @@ namespace TruffleReports.Providers.Activity
         {
             var result = new ReportGenerationResult { Provider = this.GetType().FullName };
 
+            var hostGrouping = hits.GroupBy(a => a.Host).ToArray();
+            Parallel.ForEach(hostGrouping, grouping => ProcessHostReport(grouping.Key, grouping));
+
+            // Update report
+            result.ReportResult = ReportResult.Success.ToString();
+
+            return Task.FromResult(result);
+        }
+
+        /// <summary>
+        /// Generates a logged in report for the specified single host.
+        /// </summary>
+        /// <param name="host">The host.</param>
+        /// <param name="hits">The hits.</param>
+        private void ProcessHostReport(string host, IEnumerable<Hit> hits)
+        {
             // Find all the distinct Identities in Hits - These are definitely currently logged in
             var currentHitsLoggedIn = hits.Select(a => a.Identity).Distinct().ToArray();
 
@@ -73,35 +89,32 @@ namespace TruffleReports.Providers.Activity
             // Find the previous logged in report, use it to scape all the information and merge
             Parallel.ForEach(logOutHits, hit =>
                 {
-                    if (hits.Any(a =>
-                                a.Identity == hit.Identity &&
-                                a.Logged > hit.Logged &&
-                                a.Path.Equals(logOutUrl, StringComparison.InvariantCultureIgnoreCase) == false) == false)
+                    if (hits.Any(a => a.Identity == hit.Identity && a.Logged > hit.Logged && a.Path.Equals(logOutUrl, StringComparison.InvariantCultureIgnoreCase) == false) == false)
                     {
                         loggedOutUsers.Add(hit.Identity);
                     }
                 });
 
             // Expand the already collected data and start finalisation process
-            var loggedInUsers = currentHitsLoggedIn
-                .Where(a => string.IsNullOrWhiteSpace(a) == false)
-                .Where(a => loggedOutUsers.Contains(a) == false)
-                .Distinct()
-                .Select(a => new LoggedInUser { Identity = a })
-                .ToList();
+            var loggedInUsers = currentHitsLoggedIn.Where(a => string.IsNullOrWhiteSpace(a) == false).Where(a => loggedOutUsers.Contains(a) == false).Distinct().Select(a => new LoggedInUser { Identity = a }).ToList();
 
             Parallel.ForEach(loggedInUsers, u =>
-            {
-                var h = hits.Where(b => b.Identity == u.Identity).OrderBy(b => b.Logged).ToArray();
-                u.FirstHit = h.FirstOrDefault().Logged;
-                u.LastHit = h.LastOrDefault().Logged;
-                u.TotalHits = h.Length;
-            });
+                {
+                    var h = hits.Where(b => b.Identity == u.Identity).OrderBy(b => b.Logged).ToArray();
+                    u.FirstHit = h.FirstOrDefault().Logged;
+                    u.LastHit = h.LastOrDefault().Logged;
+                    u.TotalHits = h.Length;
+                });
 
-            // Find all the users in the new report that have had no activity for the defined period of time before forced logout.
-            var currentReport = collection.FindOne(Query<LoggedInReport>.EQ(a => a.Date, DateTime.Today));
+            // Locate the report for today for this host, this will be appended to or created
+            var query = Query.And(
+                Query<LoggedInReport>.EQ(a => a.Date, DateTime.Today), 
+                Query<LoggedInReport>.EQ(a => a.Host, host)
+            );
+            var currentReport = collection.FindOne(query);
             if (currentReport != null)
             {
+                // Find all the users in the new report that have had no activity for the defined period of time before forced logout.
                 var previousSegment = currentReport.Segments.OrderBy(a => a.Generated).LastOrDefault();
 
                 Parallel.ForEach(previousSegment.Users, u =>
@@ -133,20 +146,10 @@ namespace TruffleReports.Providers.Activity
             Parallel.ForEach(loggedInUsers, u => u.AveragePerHit = TimeSpan.FromSeconds((u.LastHit - u.FirstHit).TotalSeconds / u.TotalHits));
 
             // Generate report
-            var report = new LoggedInSegment
-            {
-                Generated = DateTime.Now,
-                Total = loggedInUsers.Count,
-                Users = loggedInUsers.ToArray()
-            };
+            var report = new LoggedInSegment { Generated = DateTime.Now, Total = loggedInUsers.Count, Users = loggedInUsers.ToArray() };
             currentReport = currentReport ?? new LoggedInReport { Date = DateTime.Today, Segments = new List<LoggedInSegment>() };
             currentReport.Segments.Add(report);
             collection.Save(currentReport);
-
-            // Update report
-            result.ReportResult = ReportResult.Success.ToString();
-
-            return Task.FromResult(result);
         }
 
         /// <summary>
@@ -157,9 +160,8 @@ namespace TruffleReports.Providers.Activity
         {
             var dateIndex = new IndexKeysBuilder<LoggedInReport>();
             dateIndex.Ascending(a => a.Date);
+            dateIndex.Ascending(a => a.Host);
             reportCollection.EnsureIndex(dateIndex);
-
-            reportCollection.EnsureIndex("Segments.Generated");
         }
     }
 }
