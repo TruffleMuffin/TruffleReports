@@ -44,7 +44,26 @@ namespace TruffleReports.Services
             stopWatch.Start();
 
             var hits = hitCollection.Find(Query.And(Query<Hit>.GTE(a => a.Logged, startWindow), Query<Hit>.LTE(a => a.Logged, endWindow))).ToArray();
-            var tasks = providers.AsParallel().Select(async provider => await provider.Generate(hits)).ToArray();
+            var tasks = providers
+                .AsParallel()
+                .Select(async provider =>
+                    {
+                        try
+                        {
+                            return await provider.Generate(hits);
+                        }
+                        catch (Exception e)
+                        {
+                            return new ReportGenerationResult
+                                {
+                                    Provider = provider.GetType().FullName,
+                                    ReportResult = ReportResult.UnknownFailure.ToString(),
+                                    Messages = new List<string> { e.Message, e.StackTrace }
+                                };
+                        }
+                    })
+                .ToArray();
+
             Task.WaitAll(tasks);
 
             stopWatch.Stop();
@@ -55,7 +74,7 @@ namespace TruffleReports.Services
                     Duration = new TimeSpan(stopWatch.ElapsedTicks),
                     Results = tasks.Select(a => a.Result).ToArray()
                 };
-            
+
             summaryCollection.Insert(summary);
         }
     }

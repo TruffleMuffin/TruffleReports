@@ -44,8 +44,10 @@ namespace TruffleReports.Providers.Activity
         /// <param name="logOutUrl">The log out URL.</param>
         public LoggedInProvider(RepositoryHelper helper, string logOutUrl = "/Home/Logout")
         {
-            this.logOutUrl = logOutUrl;
             this.collection = helper.Database.GetCollection<LoggedInReport>(LOGGED_IN_REPORT_COLLECTION);
+            EnsureIndexes(this.collection);
+
+            this.logOutUrl = logOutUrl;
         }
 
         /// <summary>
@@ -141,6 +143,17 @@ namespace TruffleReports.Providers.Activity
             result.ReportResult = ReportResult.Success.ToString();
 
             return Task.FromResult(result);
+        }
+
+        /// <summary>
+        /// Ensures the default indexes are applied to the collection.
+        /// </summary>
+        /// <param name="reportCollection">The report collection.</param>
+        private static void EnsureIndexes(MongoCollection<LoggedInReport> reportCollection)
+        {
+            var loggedIndex = new IndexKeysBuilder<LoggedInReport>();
+            loggedIndex.Ascending(a => a.Generated);
+            reportCollection.EnsureIndex(loggedIndex);
         }
     }
 }

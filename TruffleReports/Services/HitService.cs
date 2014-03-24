@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Driver;
+using MongoDB.Driver.Builders;
 using TruffleReports.Contracts;
 using TruffleReports.Helpers;
 
@@ -49,9 +50,10 @@ namespace TruffleReports.Services
         public HitService(ReportService service, RepositoryHelper helper, int buffer = 1000)
         {
             this.collection = helper.Database.GetCollection<Hit>(Consts.HIT_COLLECTION);
+            EnsureIndexes(this.collection);
 
             this.service = service;
-            
+
             this.logged = new Subject<Hit>();
             this.loggedAt = new Subject<DateTime>();
 
@@ -98,6 +100,30 @@ namespace TruffleReports.Services
                 var order = loggedAts.OrderBy(a => a).ToArray();
                 Task.Factory.StartNew(() => service.Generate(order.FirstOrDefault(), order.LastOrDefault()), CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
             }
+        }
+
+        /// <summary>
+        /// Ensures the default indexes are applied to the collection.
+        /// </summary>
+        /// <param name="hitCollection">The hit collection.</param>
+        private static void EnsureIndexes(MongoCollection<Hit> hitCollection)
+        {
+            var loggedIndex = new IndexKeysBuilder<Hit>();
+            loggedIndex.Ascending(a => a.Host);
+            loggedIndex.Ascending(a => a.Logged);
+            hitCollection.EnsureIndex(loggedIndex);
+
+            var pathIndex = new IndexKeysBuilder<Hit>();
+            loggedIndex.Ascending(a => a.Host);
+            pathIndex.Ascending(a => a.Path);
+            hitCollection.EnsureIndex(pathIndex);
+
+            var generalIndex = new IndexKeysBuilder<Hit>();
+            generalIndex.Ascending(a => a.Path);
+            generalIndex.Ascending(a => a.Logged);
+            generalIndex.Ascending(a => a.Identity);
+            generalIndex.Ascending(a => a.Host);
+            hitCollection.EnsureIndex(generalIndex);
         }
     }
 }
