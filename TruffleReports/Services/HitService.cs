@@ -59,7 +59,7 @@ namespace TruffleReports.Services
             this.loggedAt = new Subject<DateTime>();
 
             this.logged.Buffer(TimeSpan.FromMinutes(bufferTimeSpan), buffer).Subscribe(Output);
-            this.loggedAt.Buffer(TimeSpan.FromMinutes(bufferTimeSpan * 3)).Subscribe(Process);
+            this.loggedAt.Buffer(TimeSpan.FromMinutes(bufferTimeSpan * 5)).Subscribe(Process);
         }
 
         /// <summary>
